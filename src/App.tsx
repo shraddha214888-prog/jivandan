@@ -27,6 +27,7 @@ import { MotoristCabinView } from './components/MotoristCabinView';
 import { AmbulanceCockpit } from './components/AmbulanceCockpit';
 import { TrafficCommandView } from './components/TrafficCommandView';
 import { RescueAlleyModal } from './components/RescueAlleyModal';
+import { ShareModal } from './components/ShareModal';
 import { 
   Siren, 
   Navigation, 
@@ -39,7 +40,8 @@ import {
   BookOpen, 
   Sparkles,
   CheckCircle2,
-  Languages
+  Languages,
+  Share2
 } from 'lucide-react';
 
 type ActiveTab = 'simulator' | 'split' | 'motorist' | 'ambulance' | 'command';
@@ -56,6 +58,7 @@ export default function App() {
   const [simSpeed, setSimSpeed] = useState<number>(1);
   const [selectedVehicleId, setSelectedVehicleId] = useState<string | null>('car-user');
   const [isGuideOpen, setIsGuideOpen] = useState<boolean>(false);
+  const [isShareOpen, setIsShareOpen] = useState<boolean>(false);
   const [isAudioMuted, setIsAudioMuted] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [lastBroadcast, setLastBroadcast] = useState<{ text: string; timestamp: number } | null>(null);
@@ -323,9 +326,13 @@ export default function App() {
         {/* Zone 1: Single text element wordmark in display face */}
         <div className="flex items-center gap-2.5">
           <span className="w-3 h-3 rounded-full bg-rose-500 animate-pulse" />
-          <a href="/" className="text-lg font-black tracking-tight text-white font-display">
+          <button
+            type="button"
+            onClick={() => setActiveTab('simulator')}
+            className="text-lg font-black tracking-tight text-white font-display hover:text-rose-400 transition-colors cursor-pointer text-left"
+          >
             {t.appName}
-          </a>
+          </button>
         </div>
 
         {/* Zone 2: Clean single-line navigation links */}
@@ -409,6 +416,17 @@ export default function App() {
               EN
             </button>
           </div>
+
+          {/* Share App Link Button */}
+          <button
+            type="button"
+            onClick={() => setIsShareOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-semibold shadow-sm transition-all cursor-pointer active:scale-95 whitespace-nowrap"
+            title={lang === 'gu' ? 'લિંક શેર કરો' : 'Share App Link'}
+          >
+            <Share2 className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">{lang === 'gu' ? 'શેર લિંક' : 'Share Link'}</span>
+          </button>
 
           <button
             onClick={() => setIsGuideOpen(true)}
@@ -639,6 +657,14 @@ export default function App() {
 
       {/* Rescue Alley Guide Modal */}
       <RescueAlleyModal isOpen={isGuideOpen} lang={lang} onClose={() => setIsGuideOpen(false)} />
+
+      {/* Share App Link Modal */}
+      <ShareModal
+        isOpen={isShareOpen}
+        lang={lang}
+        onClose={() => setIsShareOpen(false)}
+        onShowToast={showToast}
+      />
 
       {/* Footer */}
       <footer className="border-t border-slate-900 py-6 px-6 text-center text-xs text-slate-500">
